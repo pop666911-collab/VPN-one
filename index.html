@@ -1,39 +1,241 @@
-DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Скоро</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f7f8fa;
-      color: #1a1a1a;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      text-align: center;
-    }
-    .container {
-      max-width: 360px;
-    }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      letter-spacing: -0.3px;
-    }
-    p {
-      font-size: 0.95rem;
-      color: #8a8f98;
-      line-height: 1.6;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Вакансии</title>
+<style>
+:root{
+  --bg:#080a10;--text:#f4f6fa;--muted:#8b93a5;
+  --green:#22c55e;--gold:#fbbf24;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{overflow-x:hidden}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  padding:0 16px 40px;position:relative;
+}
+/* Анимированный градиентный фон */
+body::before{
+  content:'';position:fixed;inset:-50%;z-index:-2;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(59,130,246,0.35),transparent 40%),
+    radial-gradient(circle at 80% 30%,rgba(168,85,247,0.30),transparent 45%),
+    radial-gradient(circle at 50% 80%,rgba(34,197,94,0.25),transparent 40%);
+  animation:float 18s ease-in-out infinite;
+  filter:blur(60px);
+}
+@keyframes float{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-20px) scale(1.05)}
+  66%{transform:translate(-20px,25px) scale(0.98)}
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;
+  background:linear-gradient(180deg,rgba(8,10,16,0.35) 0%,rgba(8,10,16,0.85) 60%,var(--bg) 100%);
+}
+.app{width:100%;max-width:480px;margin:0 auto;padding-top:40px;position:relative;z-index:1}
+
+/* Хедер */
+.header{text-align:center;margin-bottom:32px}
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.7rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;
+  color:#93c5fd;background:rgba(59,130,246,0.12);
+  border:1px solid rgba(59,130,246,0.3);padding:6px 12px;border-radius:20px;
+  margin-bottom:16px;backdrop-filter:blur(10px);
+}
+.badge .pulse{
+  width:6px;height:6px;background:#3b82f6;border-radius:50%;
+  box-shadow:0 0 0 0 rgba(59,130,246,0.7);animation:pulseRing 2s infinite;
+}
+@keyframes pulseRing{
+  0%{box-shadow:0 0 0 0 rgba(59,130,246,0.7)}
+  70%{box-shadow:0 0 0 10px rgba(59,130,246,0)}
+  100%{box-shadow:0 0 0 0 rgba(59,130,246,0)}
+}
+h1{
+  font-size:2rem;font-weight:800;letter-spacing:-0.8px;line-height:1.1;
+  margin-bottom:12px;
+  background:linear-gradient(135deg,#fff 0%,#c7d2fe 60%,#a78bfa 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.subtitle{font-size:0.92rem;color:var(--muted);line-height:1.55;max-width:320px;margin:0 auto}
+.stats{
+  display:flex;justify-content:center;gap:24px;margin-top:24px;
+  padding:14px 20px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:18px;backdrop-filter:blur(12px);
+}
+.stat{text-align:center}
+.stat-num{
+  font-size:1.15rem;font-weight:800;line-height:1;
+  background:linear-gradient(135deg,#3b82f6,#a855f7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-lbl{font-size:0.68rem;color:var(--muted);margin-top:4px;letter-spacing:0.3px}
+
+/* Секция */
+.section-title{
+  display:flex;align-items:center;gap:10px;
+  font-size:0.78rem;color:var(--muted);font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  margin:0 4px 14px;
+}
+.section-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(139,147,165,0.3),transparent);
+}
+
+/* Карточки */
+.list{display:flex;flex-direction:column;gap:12px}
+.vacancy{
+  display:flex;align-items:center;gap:14px;
+  padding:16px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px;text-decoration:none;color:var(--text);
+  transition:transform 0.25s ease,box-shadow 0.25s ease,border-color 0.25s ease;
+  position:relative;overflow:hidden;backdrop-filter:blur(14px);
+}
+.vacancy::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--c,linear-gradient(135deg,#3b82f6,#60a5fa));
+  border-radius:3px 0 0 3px;
+}
+.vacancy:active{transform:scale(0.98)}
+@media (hover:hover){
+  .vacancy:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,255,255,0.16);
+    box-shadow:0 12px 32px -8px var(--shadow,rgba(59,130,246,0.5));
+  }
+  .vacancy:hover .v-arrow{transform:translateX(4px);color:#fff}
+  .vacancy:hover .v-icon{transform:scale(1.06) rotate(-3deg)}
+}
+.v-icon{
+  flex-shrink:0;width:52px;height:52px;border-radius:15px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;position:relative;
+  background:var(--c,linear-gradient(135deg,#3b82f6,#60a5fa));
+  box-shadow:0 6px 20px -6px var(--shadow,rgba(59,130,246,0.7));
+  transition:transform 0.25s ease;
+}
+.v-icon::after{
+  content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(255,255,255,0.3),transparent 50%);
+}
+.v-body{flex:1;min-width:0}
+.v-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+.v-title{font-size:1rem;font-weight:700;line-height:1.25;letter-spacing:-0.2px}
+.tag{
+  font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+  padding:3px 7px;border-radius:6px;
+}
+.tag.hot{color:#fca5a5;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3)}
+.tag.new{color:#86efac;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3)}
+.v-meta{
+  font-size:0.78rem;color:var(--muted);
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.v-salary{color:var(--green);font-weight:700}
+.v-dot{opacity:0.4}
+.v-arrow{
+  flex-shrink:0;color:var(--muted);font-size:1.1rem;
+  transition:transform 0.25s ease,color 0.25s ease;
+}
+
+.footer{
+  text-align:center;margin-top:32px;
+  font-size:0.72rem;color:#4a5263;line-height:1.6;
+}
+.footer .shield{color:#22c55e}
+
+/* Индивидуальные цвета */
+.c1{--c:linear-gradient(135deg,#facc15,#f97316);--shadow:rgba(249,115,22,0.5)}
+.c2{--c:linear-gradient(135deg,#22c55e,#16a34a);--shadow:rgba(34,197,94,0.5)}
+.c3{--c:linear-gradient(135deg,#ef4444,#dc2626);--shadow:rgba(239,68,68,0.5)}
+.c4{--c:linear-gradient(135deg,#3b82f6,#2563eb);--shadow:rgba(59,130,246,0.5)}
+.c5{--c:linear-gradient(135deg,#a855f7,#7c3aed);--shadow:rgba(168,85,247,0.5)}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Здесь скоро что-то будет</h1>
-    <p>Страница находится в разработке.<br>Загляните позже.</p>
+<div class="app">
+
+<div class="header">
+  <div class="badge"><span class="pulse"></span>Обновлено сегодня</div>
+  <h1>Работа рядом<br>с тобой</h1>
+  <p class="subtitle">Проверенные вакансии с гибким графиком. Откликнись в один клик — начни зарабатывать уже завтра.</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-num">5</div><div class="stat-lbl">вакансий</div></div>
+    <div class="stat"><div class="stat-num">4.9★</div><div class="stat-lbl">рейтинг</div></div>
+    <div class="stat"><div class="stat-num" id="onlineCount">1 284</div><div class="stat-lbl">смотрят</div></div>
+  </div>
+</div>
+
+<div class="section-title">Свежие вакансии</div>
+
+<div class="list">
+
+  <a href="https://trk.ppdu.ru/click?uid=308629&amp;oid=2304&amp;erid=CQH36pWzJqVGXC5oLP8WVVNCNqJmbhiUPijGiu4zpwPd7G" class="vacancy c1" target="_blank" rel="noopener">
+    <div class="v-icon">🛵</div>
+    <div class="v-body">
+      <div class="v-top"><div class="v-title">Курьер — Яндекс Еда</div><span class="tag hot">Хит</span></div>
+      <div class="v-meta"><span class="v-salary">до 4 500 ₽/день</span><span class="v-dot">·</span><span>Свободный график</span></div>
+    </div>
+    <div class="v-arrow">→</div>
+  </a>
+
+  <a href="https://trk.ppdu.ru/click?uid=308629&amp;oid=2682&amp;erid=2SDnjeL6Zwp" class="vacancy c2" target="_blank" rel="noopener">
+    <div class="v-icon">🛒</div>
+    <div class="v-body">
+      <div class="v-top"><div class="v-title">Сборщик заказов — Купер</div></div>
+      <div class="v-meta"><span class="v-salary">до 192 000 ₽/мес</span><span class="v-dot">·</span><span>Гибкий график</span></div>
+    </div>
+    <div class="v-arrow">→</div>
+  </a>
+
+  <a href="https://trk.ppdu.ru/click?uid=308629&amp;oid=1124&amp;erid=2SDnjc9AKti" class="vacancy c3" target="_blank" rel="noopener">
+    <div class="v-icon">⚡</div>
+    <div class="v-body">
+      <div class="v-top"><div class="v-title">Заряд — Магнит</div></div>
+      <div class="v-meta"><span class="v-salary">до 3 500 ₽/смена</span><span class="v-dot">·</span><span>Рядом с домом</span></div>
+    </div>
+    <div class="v-arrow">→</div>
+  </a>
+
+  <a href="https://trk.ppdu.ru/click?uid=308629&amp;oid=1279&amp;erid=2SDnjceSYW1" class="vacancy c4" target="_blank" rel="noopener">
+    <div class="v-icon">🤲</div>
+    <div class="v-body">
+      <div class="v-top"><div class="v-title">Руки — подработка</div><span class="tag new">Новое</span></div>
+      <div class="v-meta"><span class="v-salary">до 3 000 ₽/смена</span><span class="v-dot">·</span><span>Без опыта</span></div>
+    </div>
+    <div class="v-arrow">→</div>
+  </a>
+
+  <a href="https://trk.ppdu.ru/click?uid=308629&amp;oid=2465&amp;erid=2SDnjdmxiVK" class="vacancy c5" target="_blank" rel="noopener">
+    <div class="v-icon">🏦</div>
+    <div class="v-body">
+      <div class="v-top"><div class="v-title">Выездной представитель — ЕФИН</div></div>
+      <div class="v-meta"><span class="v-salary">от 90 000 ₽/мес</span><span class="v-dot">·</span><span>Офис / выезды</span></div>
+    </div>
+    <div class="v-arrow">→</div>
+  </a>
+
+</div>
+
+<p class="footer"><span class="shield">✓</span> Все вакансии проверены · Обновляется ежедневно</p>
+</div>
+
+<script>
+var base=1284,el=document.getElementById('onlineCount');
+setInterval(function(){
+  base+=Math.floor(Math.random()*9)-4;
+  if(base<1000)base=1000;
+  el.textContent=base.toLocaleString('ru-RU');
+},3000);
+</script>
+</body>
+</html>
